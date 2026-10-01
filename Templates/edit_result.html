@@ -1,0 +1,95 @@
+{% extends "admin_base.html" %}
+
+{% block title %}Edit Result{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h3>Edit Result</h3>
+        <a href="{% url 'manage_results' %}" class="btn btn-secondary">
+            <i class="bi bi-arrow-left"></i> Back
+        </a>
+    </div>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+
+            <form method="POST">
+                {% csrf_token %}
+
+                <div class="row g-3">
+
+                    <div class="col-md-6">
+                        <label class="form-label">Student</label>
+                        <select name="student" class="form-select" required>
+                            {% for student in students %}
+                                <option value="{{ student.id }}"
+                                    {% if result.student_id == student.id %}selected{% endif %}>
+                                    {{ student.student_id }} - {{ student.full_name }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">Subject</label>
+                        <select name="subject" class="form-select" required>
+                            {% for subject in subjects %}
+                                <option value="{{ subject.id }}"
+                                    {% if result.subject_id == subject.id %}selected{% endif %}>
+                                    {{ subject.subject_name }} ({{ subject.subject_code }})
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">Marks</label>
+                        <input type="number" name="marks" class="form-control"
+                               step="0.01" min="0"
+                               value="{{ result.marks }}" required>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">Maximum Marks</label>
+                        <input type="number" name="max_marks" class="form-control"
+                               step="0.01" min="1"
+                               value="{{ result.max_marks }}" required>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">Exam Type</label>
+                        <select name="exam_type" class="form-select">
+                            <option value="Final Exam" {% if result.exam_type == "Final Exam" %}selected{% endif %}>Final Exam</option>
+                            <option value="Mid Term" {% if result.exam_type == "Mid Term" %}selected{% endif %}>Mid Term</option>
+                            <option value="Unit Test" {% if result.exam_type == "Unit Test" %}selected{% endif %}>Unit Test</option>
+                            <option value="Internal Exam" {% if result.exam_type == "Internal Exam" %}selected{% endif %}>Internal Exam</option>
+                        </select>
+                    </div>
+
+                </div>
+
+                <div class="mt-4">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-save"></i> Update Result
+                    </button>
+
+                    <a href="{% url 'manage_results' %}" class="btn btn-secondary ms-2">
+                        Cancel
+                    </a>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+
+</div>
+{% endblock %}

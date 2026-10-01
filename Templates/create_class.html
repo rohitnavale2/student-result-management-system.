@@ -1,0 +1,221 @@
+{% extends 'admin_base.html' %}
+
+{% block title %}
+Create Class
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid p-0">
+
+    <!-- Page Header -->
+    <div class="mb-4">
+
+        <h2 class="fw-bold mb-1">
+            <i class="bi bi-plus-circle-fill text-primary me-2"></i>
+            Create Class
+        </h2>
+
+        <p class="text-muted mb-0">
+            Add a new class to the student result management system.
+        </p>
+
+    </div>
+
+
+    <!-- Create Class Form -->
+    <div class="row">
+
+        <div class="col-lg-8 col-xl-7">
+
+            <div class="card border-0 shadow-sm">
+
+                <div class="card-header bg-white py-3">
+
+                    <h5 class="mb-0 fw-semibold">
+                        Class Information
+                    </h5>
+
+                </div>
+
+                {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-success">{{ message }}</div>
+                {% endfor %}
+                {% endif %}
+                <div class="card-body p-4">
+
+                    <form method="POST">
+
+                        {% csrf_token %}
+
+
+                        <!-- Class Name -->
+                        <div class="mb-3">
+
+                            <label for="class_name" class="form-label fw-semibold">
+
+                                Class Name
+                                <span class="text-danger">*</span>
+
+                            </label>
+
+                            <input type="text" name="class_name" id="class_name" class="form-control"
+                                placeholder="Enter class name" required>
+
+                            <div class="form-text">
+                                Example: Class 10, FYBCA, SYBCA
+                            </div>
+
+                        </div>
+
+
+                        <!-- Section -->
+                        <div class="mb-3">
+
+                            <label for="section" class="form-label fw-semibold">
+
+                                Section
+
+                            </label>
+
+                            <input type="text" name="section" id="section" class="form-control"
+                                placeholder="Enter section">
+
+                            <div class="form-text">
+                                Example: A, B, C
+                            </div>
+
+                        </div>
+
+
+                        <!-- Academic Year -->
+                        <div class="mb-3">
+
+                            <label for="academic_year" class="form-label fw-semibold">
+
+                                Academic Year
+                                <span class="text-danger">*</span>
+
+                            </label>
+
+                            <input type="text" name="academic_year" id="academic_year" class="form-control"
+                                placeholder="2026-27" required>
+
+                        </div>
+
+
+                        <!-- Status -->
+                        <div class="mb-4">
+
+                            <label for="status" class="form-label fw-semibold">
+
+                                Status
+
+                            </label>
+
+                            <select name="status" id="status" class="form-select">
+
+                                <option value="active">
+                                    Active
+                                </option>
+
+                                <option value="inactive">
+                                    Inactive
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <!-- Buttons -->
+                        <div class="d-flex gap-2">
+
+                            <button type="submit" class="btn btn-primary px-4">
+
+                                <i class="bi bi-check-circle me-1"></i>
+                                Create Class
+
+                            </button>
+
+
+                            <a href="#" class="btn btn-outline-secondary px-4">
+
+                                <i class="bi bi-arrow-left me-1"></i>
+                                Back
+
+                            </a>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Information Card -->
+        <div class="col-lg-4 col-xl-5 mt-4 mt-lg-0">
+
+            <div class="card border-0 shadow-sm">
+
+                <div class="card-body p-4">
+
+                    <div class="d-flex align-items-center mb-3">
+
+                        <div class="bg-primary-subtle text-primary
+                                    rounded-3 p-3 me-3">
+
+                            <i class="bi bi-info-circle-fill fs-4"></i>
+
+                        </div>
+
+                        <h5 class="fw-bold mb-0">
+                            Class Information
+                        </h5>
+
+                    </div>
+
+
+                    <p class="text-muted">
+                        Create a class by providing the class name,
+                        section and academic year.
+                    </p>
+
+
+                    <ul class="text-muted ps-3 mb-0">
+
+                        <li class="mb-2">
+                            Class name is required.
+                        </li>
+
+                        <li class="mb-2">
+                            Section can be used to separate students.
+                        </li>
+
+                        <li class="mb-2">
+                            Select the appropriate academic year.
+                        </li>
+
+                        <li>
+                            Only active classes should be used for
+                            current student registration.
+                        </li>
+
+                    </ul>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

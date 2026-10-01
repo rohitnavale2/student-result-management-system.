@@ -1,0 +1,826 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<!-- ================= HERO / RESULT SEARCH ================= -->
+<section class="bg-primary text-white py-5">
+    <div class="container py-4">
+
+        <div class="row align-items-center g-5">
+
+            <!-- Hero Content -->
+            <div class="col-lg-7">
+
+                <span class="badge bg-light text-primary px-3 py-2 mb-3">
+                    <i class="bi bi-mortarboard-fill me-1"></i>
+                    Student Result Management System
+                </span>
+
+                <h1 class="display-5 fw-bold">
+                    Check Your Academic Result
+                </h1>
+
+                <p class="lead mt-3 mb-4">
+                    Enter your PRN / Student ID to view your complete
+                    academic performance, subject marks and percentage.
+                </p>
+
+                <div class="d-flex flex-wrap gap-2">
+
+                    <span class="badge bg-light bg-opacity-10 px-3 py-2">
+                        <i class="bi bi-search me-1"></i>
+                        Quick Search
+                    </span>
+
+                    <span class="badge bg-light bg-opacity-10 px-3 py-2">
+                        <i class="bi bi-bar-chart me-1"></i>
+                        Performance
+                    </span>
+
+                    <span class="badge bg-light bg-opacity-10 px-3 py-2">
+                        <i class="bi bi-file-earmark-pdf me-1"></i>
+                        Download Result
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <!-- Search Card -->
+            <div class="col-lg-5">
+
+                <div class="card border-0 shadow-lg">
+
+                    <div class="card-body p-4">
+
+                        <div class="text-center mb-4">
+
+                            <div class="bg-primary bg-opacity-10 rounded-circle
+                                        d-inline-flex align-items-center
+                                        justify-content-center p-3 mb-3">
+
+                                <i class="bi bi-search text-primary fs-3"></i>
+
+                            </div>
+
+                            <h4 class="fw-bold text-dark mb-1">
+                                Check Result
+                            </h4>
+
+                            <p class="text-muted small mb-0">
+                                Enter your PRN / Student ID
+                            </p>
+
+                        </div>
+
+
+                        <form method="get" action="{% url 'Home' %}">
+
+                            <label class="form-label fw-semibold text-dark">
+                                PRN / Student ID
+                            </label>
+
+                            <input type="text"
+                                   name="student_id"
+                                   value="{{ search_student_id }}"
+                                   class="form-control form-control-lg"
+                                   placeholder="e.g. 2022015200157182"
+                                   maxlength="20"
+                                   required>
+
+                            <button type="submit"
+                                    class="btn btn-primary btn-lg w-100 mt-3">
+
+                                <i class="bi bi-search me-1"></i>
+                                View Result
+
+                            </button>
+
+                        </form>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+</section>
+
+
+<!-- ================= RESULT ================= -->
+{% if searched %}
+
+<section class="py-5 bg-light">
+
+    <div class="container">
+
+        {% if student %}
+
+        <!-- ================= STUDENT INFORMATION ================= -->
+        <div class="card border-0 shadow-sm mb-4">
+
+            <div class="card-body p-4">
+
+                <div class="row align-items-center">
+
+                    <!-- Student Details -->
+                    <div class="col-md-8">
+
+                        <span class="badge bg-success mb-2">
+                            <i class="bi bi-check-circle me-1"></i>
+                            Result Found
+                        </span>
+
+                        <h3 class="fw-bold mb-2">
+                            {{ student.full_name }}
+                        </h3>
+
+                        <div class="text-muted">
+
+                            <div class="mb-1">
+                                <i class="bi bi-person-vcard me-2"></i>
+                                PRN / Student ID:
+                                <strong>{{ student.student_id }}</strong>
+                            </div>
+
+                            <div>
+                                <i class="bi bi-mortarboard me-2"></i>
+                                Class:
+                                <strong>{{ student.class_name }}</strong>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Overall Result -->
+                    <div class="col-md-4 text-md-end mt-4 mt-md-0">
+
+                        <small class="text-muted">
+                            Overall Percentage
+                        </small>
+
+                        <h1 class="fw-bold text-primary mb-1">
+                            {{ percentage }}%
+                        </h1>
+
+                        {% if status == "Pass" %}
+
+                        <span class="badge bg-success px-3 py-2">
+                            <i class="bi bi-check-circle me-1"></i>
+                            Pass
+                        </span>
+
+                        {% else %}
+
+                        <span class="badge bg-danger px-3 py-2">
+                            <i class="bi bi-x-circle me-1"></i>
+                            Fail
+                        </span>
+
+                        {% endif %}
+
+                        <!-- Download Result -->
+                        <div class="mt-3">
+
+                            <a href="{% url 'download_result' student.id %}"
+                               class="btn btn-danger">
+
+                                <i class="bi bi-file-earmark-pdf me-1"></i>
+                                Download Result
+
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- ================= RESULT SUMMARY ================= -->
+        <div class="row g-4 mb-4">
+
+            <!-- Subjects -->
+            <div class="col-6 col-lg-3">
+
+                <div class="card border-0 shadow-sm h-100">
+
+                    <div class="card-body text-center p-4">
+
+                        <i class="bi bi-book text-primary fs-1"></i>
+
+                        <h3 class="fw-bold mt-2 mb-1">
+                            {{ subject_count }}
+                        </h3>
+
+                        <p class="text-muted mb-0">
+                            Subjects
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- Total Marks -->
+            <div class="col-6 col-lg-3">
+
+                <div class="card border-0 shadow-sm h-100">
+
+                    <div class="card-body text-center p-4">
+
+                        <i class="bi bi-award text-success fs-1"></i>
+
+                        <h3 class="fw-bold mt-2 mb-1">
+                            {{ total_marks }}
+                        </h3>
+
+                        <p class="text-muted mb-0">
+                            Total Marks
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- Maximum Marks -->
+            <div class="col-6 col-lg-3">
+
+                <div class="card border-0 shadow-sm h-100">
+
+                    <div class="card-body text-center p-4">
+
+                        <i class="bi bi-bar-chart text-warning fs-1"></i>
+
+                        <h3 class="fw-bold mt-2 mb-1">
+                            {{ total_max }}
+                        </h3>
+
+                        <p class="text-muted mb-0">
+                            Maximum Marks
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- Percentage -->
+            <div class="col-6 col-lg-3">
+
+                <div class="card border-0 shadow-sm h-100">
+
+                    <div class="card-body text-center p-4">
+
+                        <i class="bi bi-percent text-danger fs-1"></i>
+
+                        <h3 class="fw-bold mt-2 mb-1">
+                            {{ percentage }}%
+                        </h3>
+
+                        <p class="text-muted mb-0">
+                            Overall Percentage
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- ================= SUBJECT RESULTS ================= -->
+        <div class="card border-0 shadow-sm">
+
+            <div class="card-header bg-white border-0 p-4">
+
+                <div class="d-flex align-items-center">
+
+                    <div class="bg-primary bg-opacity-10 rounded p-2 me-3">
+
+                        <i class="bi bi-bar-chart-line text-primary fs-5"></i>
+
+                    </div>
+
+                    <div>
+
+                        <h5 class="fw-bold mb-1">
+                            Subject-wise Result
+                        </h5>
+
+                        <small class="text-muted">
+                            Complete examination performance
+                        </small>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="card-body p-0">
+
+                <div class="table-responsive">
+
+                    <table class="table table-hover align-middle mb-0">
+
+                        <thead class="table-light">
+
+                            <tr>
+
+                                <th class="px-4">
+                                    #
+                                </th>
+
+                                <th>
+                                    Subject
+                                </th>
+
+                                <th>
+                                    Code
+                                </th>
+
+                                <th>
+                                    Exam
+                                </th>
+
+                                <th>
+                                    Marks
+                                </th>
+
+                                <th>
+                                    Percentage
+                                </th>
+
+                                <th>
+                                    Status
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody>
+
+                            {% for result in student_results %}
+
+                            <tr>
+
+                                <!-- Number -->
+                                <td class="px-4">
+                                    {{ forloop.counter }}
+                                </td>
+
+
+                                <!-- Subject -->
+                                <td>
+
+                                    <strong>
+                                        {{ result.subject.subject_name }}
+                                    </strong>
+
+                                </td>
+
+
+                                <!-- Subject Code -->
+                                <td>
+
+                                    <span class="badge bg-light text-dark">
+                                        {{ result.subject.subject_code }}
+                                    </span>
+
+                                </td>
+
+
+                                <!-- Exam -->
+                                <td>
+                                    {{ result.exam_type }}
+                                </td>
+
+
+                                <!-- Marks -->
+                                <td>
+
+                                    <strong>
+                                        {{ result.marks }}
+                                    </strong>
+
+                                    <span class="text-muted">
+                                        / {{ result.max_marks }}
+                                    </span>
+
+                                </td>
+
+
+                                <!-- Subject Percentage -->
+                                <td>
+
+                                    <strong class="text-primary">
+                                        {{ result.subject_percentage }}%
+                                    </strong>
+
+                                </td>
+
+
+                                <!-- Status -->
+                                <td>
+
+                                    {% if result.subject_status == "Pass" %}
+
+                                    <span class="badge bg-success">
+
+                                        <i class="bi bi-check-circle me-1"></i>
+                                        Pass
+
+                                    </span>
+
+                                    {% else %}
+
+                                    <span class="badge bg-danger">
+
+                                        <i class="bi bi-x-circle me-1"></i>
+                                        Fail
+
+                                    </span>
+
+                                    {% endif %}
+
+                                </td>
+
+                            </tr>
+
+                            {% empty %}
+
+                            <tr>
+
+                                <td colspan="7"
+                                    class="text-center py-5 text-muted">
+
+                                    <i class="bi bi-info-circle fs-3 d-block mb-2"></i>
+
+                                    No result records found.
+
+                                </td>
+
+                            </tr>
+
+                            {% endfor %}
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- ================= RESULT FOOTER ================= -->
+        <div class="card border-0 shadow-sm mt-4">
+
+            <div class="card-body p-3">
+
+                <div class="d-flex flex-wrap justify-content-between
+                            align-items-center">
+
+                    <small class="text-muted">
+
+                        <i class="bi bi-info-circle me-1"></i>
+
+                        Result generated from the Student Result
+                        Management System.
+
+                    </small>
+
+                    <strong class="text-primary">
+
+                        Overall: {{ percentage }}%
+
+                    </strong>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        {% else %}
+
+        <!-- ================= STUDENT NOT FOUND ================= -->
+        <div class="card border-0 shadow-sm">
+
+            <div class="card-body text-center py-5">
+
+                <i class="bi bi-person-x text-danger"
+                   style="font-size: 60px;"></i>
+
+                <h4 class="fw-bold mt-3">
+                    Student Not Found
+                </h4>
+
+                <p class="text-muted">
+
+                    No student was found with PRN / Student ID
+
+                    <strong>
+                        {{ search_student_id }}
+                    </strong>.
+
+                </p>
+
+                <a href="{% url 'Home' %}"
+                   class="btn btn-primary">
+
+                    <i class="bi bi-arrow-left me-1"></i>
+                    Try Again
+
+                </a>
+
+            </div>
+
+        </div>
+
+        {% endif %}
+
+    </div>
+
+</section>
+
+{% endif %}
+
+
+<!-- ================= LATEST NOTICES ================= -->
+<section class="py-5">
+
+    <div class="container">
+
+        <div class="d-flex justify-content-between align-items-center mb-4">
+
+            <div>
+
+                <span class="badge bg-primary bg-opacity-10 text-primary mb-2">
+                    Announcements
+                </span>
+
+                <h3 class="fw-bold mb-1">
+
+                    <i class="bi bi-megaphone-fill text-primary me-2"></i>
+
+                    Latest Notices
+
+                </h3>
+
+                <p class="text-muted mb-0">
+                    Important announcements and updates
+                </p>
+
+            </div>
+
+
+            {% if user.is_superuser %}
+
+            <a href="{% url 'manage_notices' %}"
+               class="btn btn-outline-primary btn-sm">
+
+                <i class="bi bi-list-ul me-1"></i>
+                Manage Notices
+
+            </a>
+
+            {% endif %}
+
+        </div>
+
+
+        <div class="row g-4">
+
+            {% for notice in notices %}
+
+            <div class="col-md-6 col-lg-4">
+
+                <div class="card border-0 shadow-sm h-100">
+
+                    <div class="card-body p-4">
+
+                        <div class="d-flex align-items-start mb-3">
+
+                            <div class="bg-primary bg-opacity-10 rounded-circle
+                                        d-flex align-items-center justify-content-center
+                                        flex-shrink-0"
+                                 style="width: 48px; height: 48px;">
+
+                                <i class="bi bi-megaphone-fill text-primary"></i>
+
+                            </div>
+
+                            <div class="ms-3">
+
+                                <h5 class="fw-bold mb-1">
+                                    {{ notice.title }}
+                                </h5>
+
+                                <small class="text-muted">
+
+                                    <i class="bi bi-calendar3 me-1"></i>
+
+                                    {{ notice.created_at|date:"d M Y" }}
+
+                                </small>
+
+                            </div>
+
+                        </div>
+
+
+                        <p class="text-muted mb-0">
+                            {{ notice.message|truncatewords:25 }}
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            {% empty %}
+
+            <div class="col-12">
+
+                <div class="card border-0 shadow-sm">
+
+                    <div class="card-body text-center py-5">
+
+                        <i class="bi bi-megaphone text-muted"
+                           style="font-size: 45px;"></i>
+
+                        <h5 class="fw-bold mt-3">
+                            No Notices Available
+                        </h5>
+
+                        <p class="text-muted mb-0">
+                            There are currently no announcements.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ================= HOW IT WORKS ================= -->
+<section class="py-5 bg-light">
+
+    <div class="container">
+
+        <div class="text-center mb-5">
+
+            <span class="badge bg-primary bg-opacity-10 text-primary mb-2">
+                How It Works
+            </span>
+
+            <h3 class="fw-bold">
+                Student Result Portal
+            </h3>
+
+            <p class="text-muted">
+                Access your academic performance quickly and easily.
+            </p>
+
+        </div>
+
+
+        <div class="row g-4">
+
+            <!-- Step 1 -->
+            <div class="col-md-4">
+
+                <div class="card border-0 shadow-sm h-100">
+
+                    <div class="card-body text-center p-4">
+
+                        <div class="bg-primary bg-opacity-10 rounded-circle
+                                    d-inline-flex align-items-center
+                                    justify-content-center p-3">
+
+                            <i class="bi bi-person-vcard text-primary fs-2"></i>
+
+                        </div>
+
+                        <h5 class="fw-bold mt-3">
+                            Enter PRN
+                        </h5>
+
+                        <p class="text-muted small mb-0">
+                            Enter your registered PRN or Student ID
+                            to search for your academic record.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- Step 2 -->
+            <div class="col-md-4">
+
+                <div class="card border-0 shadow-sm h-100">
+
+                    <div class="card-body text-center p-4">
+
+                        <div class="bg-success bg-opacity-10 rounded-circle
+                                    d-inline-flex align-items-center
+                                    justify-content-center p-3">
+
+                            <i class="bi bi-search text-success fs-2"></i>
+
+                        </div>
+
+                        <h5 class="fw-bold mt-3">
+                            Find Result
+                        </h5>
+
+                        <p class="text-muted small mb-0">
+                            The system retrieves your registered
+                            academic result records.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- Step 3 -->
+            <div class="col-md-4">
+
+                <div class="card border-0 shadow-sm h-100">
+
+                    <div class="card-body text-center p-4">
+
+                        <div class="bg-warning bg-opacity-10 rounded-circle
+                                    d-inline-flex align-items-center
+                                    justify-content-center p-3">
+
+                            <i class="bi bi-file-earmark-pdf text-warning fs-2"></i>
+
+                        </div>
+
+                        <h5 class="fw-bold mt-3">
+                            View & Download
+                        </h5>
+
+                        <p class="text-muted small mb-0">
+                            View subject-wise marks and percentage,
+                            then download your result as a PDF.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}

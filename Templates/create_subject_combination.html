@@ -1,0 +1,105 @@
+{% extends 'admin_base.html' %}
+
+{% block title %}Create Subject Combination{% endblock %}
+
+{% block content %}
+<div class="container-fluid p-0">
+
+    <div class="mb-4">
+        <h2 class="fw-bold mb-1">
+            <i class="bi bi-diagram-3-fill text-primary me-2"></i>
+            Create Subject Combination
+        </h2>
+        <p class="text-muted mb-0">Assign a subject to a class combination.</p>
+    </div>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags|default:'success' }} alert-dismissible fade show">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <div class="row">
+        <div class="col-lg-8 col-xl-7">
+            <div class="card border-0 shadow-sm">
+
+                <div class="card-header bg-white py-3">
+                    <h5 class="mb-0 fw-semibold">Combination Information</h5>
+                </div>
+
+                <div class="card-body p-4">
+                    <form method="POST">
+                        {% csrf_token %}
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">
+                                Class <span class="text-danger">*</span>
+                            </label>
+                            <select name="class_name" class="form-select" required>
+                                <option value="">Select Class</option>
+                                {% for class in classes %}
+                                    <option value="{{ class.id }}">
+                                        {{ class.class_name }} - {{ class.section }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">
+                                Subject <span class="text-danger">*</span>
+                            </label>
+                            <select name="subject" class="form-select" required>
+                                <option value="">Select Subject</option>
+                                {% for subject in subjects %}
+                                    <option value="{{ subject.id }}">
+                                        {{ subject.subject_name }} - {{ subject.subject_code }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label fw-semibold">Status</label>
+                            <select name="status" class="form-select">
+                                <option value="active">Active</option>
+                                <option value="inactive">Inactive</option>
+                            </select>
+                        </div>
+
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-primary px-4">
+                                <i class="bi bi-check-circle me-1"></i>Create Combination
+                            </button>
+
+                            <a href="{% url 'admin_dashboard' %}"
+                               class="btn btn-outline-secondary px-4">
+                                <i class="bi bi-arrow-left me-1"></i>Back
+                            </a>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4 col-xl-5 mt-4 mt-lg-0">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-4">
+                    <h5 class="fw-bold mb-3">
+                        <i class="bi bi-info-circle-fill text-primary me-2"></i>
+                        Combination Information
+                    </h5>
+                    <p class="text-muted mb-0">
+                        Select a class and subject to create a subject combination.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

@@ -1,0 +1,200 @@
+{% extends "admin_base.html" %}
+
+{% block title %}Manage Results{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h3>Manage Results</h3>
+        <a href="{% url 'add_result' %}" class="btn btn-primary">
+            <i class="bi bi-plus-circle"></i> Add Result
+        </a>
+    </div>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+            <form method="GET">
+                <div class="row g-3">
+
+                    <div class="col-md-7">
+                        <input type="text" name="search" class="form-control"
+                               value="{{ search }}"
+                               placeholder="Search student or subject...">
+                    </div>
+
+                    <div class="col-md-3">
+                        <select name="exam_type" class="form-select">
+                            <option value="">All Exams</option>
+                            <option value="Final Exam" {% if exam_type == "Final Exam" %}selected{% endif %}>Final Exam</option>
+                            <option value="Mid Term" {% if exam_type == "Mid Term" %}selected{% endif %}>Mid Term</option>
+                            <option value="Unit Test" {% if exam_type == "Unit Test" %}selected{% endif %}>Unit Test</option>
+                            <option value="Internal Exam" {% if exam_type == "Internal Exam" %}selected{% endif %}>Internal Exam</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-2 d-flex gap-2">
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="bi bi-search"></i> Search
+                        </button>
+
+                        <a href="{% url 'manage_results' %}" class="btn btn-secondary">
+                            <i class="bi bi-arrow-clockwise"></i>
+                        </a>
+                    </div>
+
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+
+                    <thead class="table-light">
+                        <tr>
+                            <th>#</th>
+                            <th>Student</th>
+                            <th>Subject</th>
+                            <th>Marks</th>
+                            <th>Max Marks</th>
+                            <th>Exam Type</th>
+                            <th>Created</th>
+                            <th class="text-center">Actions</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        {% for group in grouped_results %}
+
+                        <tr>
+
+                            <td>{{ forloop.counter }}</td>
+
+                            <!-- Student -->
+                            <td>
+                                <strong>{{ group.student.full_name }}</strong>
+                                <br>
+                                <small class="text-muted">
+                                    {{ group.student.student_id }}
+                                </small>
+                            </td>
+
+                            <!-- Subjects -->
+                            <td>
+                                {% for result in group.results %}
+                                    <div class="mb-2">
+                                        <strong>{{ result.subject.subject_name }}</strong>
+                                        <br>
+                                        <small class="text-muted">
+                                            {{ result.subject.subject_code }}
+                                        </small>
+                                    </div>
+                                {% endfor %}
+                            </td>
+
+                            <!-- Marks -->
+                            <td>
+                                {% for result in group.results %}
+                                    <div class="mb-2">
+                                        {{ result.marks }}
+                                    </div>
+                                {% endfor %}
+                            </td>
+
+                            <!-- Max Marks -->
+                            <td>
+                                {% for result in group.results %}
+                                    <div class="mb-2">
+                                        {{ result.max_marks }}
+                                    </div>
+                                {% endfor %}
+                            </td>
+
+                            <!-- Exam Type -->
+                            <td>
+                                {% for result in group.results %}
+                                    <div class="mb-2">
+                                        <span class="badge bg-primary">
+                                            {{ result.exam_type }}
+                                        </span>
+                                    </div>
+                                {% endfor %}
+                            </td>
+
+                            <!-- Created -->
+                            <td>
+                                {% for result in group.results %}
+                                    <div class="mb-2">
+                                        {{ result.created_at|date:"d M Y" }}
+                                    </div>
+                                {% endfor %}
+                            </td>
+
+                            <!-- Actions -->
+                            <td class="text-center">
+
+                                {% for result in group.results %}
+
+                                <div class="mb-2 d-flex justify-content-center gap-1">
+
+                                    <a href="{% url 'edit_result' result.id %}"
+                                       class="btn btn-sm btn-warning">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+
+                                    <form method="POST"
+                                          action="{% url 'delete_result' result.id %}"
+                                          class="d-inline"
+                                          onsubmit="return confirm('Are you sure you want to delete this result?');">
+
+                                        {% csrf_token %}
+
+                                        <button type="submit"
+                                                class="btn btn-sm btn-danger">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+
+                                    </form>
+
+                                </div>
+
+                                {% endfor %}
+
+                            </td>
+
+                        </tr>
+
+                        {% empty %}
+
+                        <tr>
+                            <td colspan="8" class="text-center py-4">
+                                <i class="bi bi-info-circle fs-3 text-muted"></i>
+                                <p class="text-muted mb-0">
+                                    No results found.
+                                </p>
+                            </td>
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+{% endblock %}

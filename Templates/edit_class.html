@@ -1,0 +1,114 @@
+{% extends 'admin_base.html' %}
+
+{% block title %}Edit Class{% endblock %}
+
+{% block content %}
+<div class="container-fluid p-0">
+
+    <div class="mb-4">
+        <h2 class="fw-bold mb-1">
+            <i class="bi bi-pencil-square text-primary me-2"></i>Edit Class
+        </h2>
+        <p class="text-muted mb-0">Update class information in the student result management system.</p>
+    </div>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags|default:'success' }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <div class="row">
+        <div class="col-lg-8 col-xl-7">
+            <div class="card border-0 shadow-sm">
+
+                <div class="card-header bg-white py-3">
+                    <h5 class="mb-0 fw-semibold">Class Information</h5>
+                </div>
+
+                <div class="card-body p-4">
+                    <form method="POST">
+                        {% csrf_token %}
+
+                        <div class="mb-3">
+                            <label for="class_name" class="form-label fw-semibold">
+                                Class Name <span class="text-danger">*</span>
+                            </label>
+                            <input type="text" name="class_name" id="class_name"
+                                   class="form-control"
+                                   value="{{ class_obj.class_name }}"
+                                   placeholder="Enter class name" required>
+                            <div class="form-text">Example: Class 10, FYBCA, SYBCA</div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="section" class="form-label fw-semibold">Section</label>
+                            <input type="text" name="section" id="section"
+                                   class="form-control"
+                                   value="{{ class_obj.section }}"
+                                   placeholder="Enter section">
+                            <div class="form-text">Example: A, B, C</div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="academic_year" class="form-label fw-semibold">
+                                Academic Year <span class="text-danger">*</span>
+                            </label>
+                            <input type="text" name="academic_year" id="academic_year"
+                                   class="form-control"
+                                   value="{{ class_obj.academic_year }}"
+                                   placeholder="2026-27" required>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="status" class="form-label fw-semibold">Status</label>
+                            <select name="status" id="status" class="form-select">
+                                <option value="active" {% if class_obj.status == "active" %}selected{% endif %}>Active</option>
+                                <option value="inactive" {% if class_obj.status == "inactive" %}selected{% endif %}>Inactive</option>
+                            </select>
+                        </div>
+
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-primary px-4">
+                                <i class="bi bi-check-circle me-1"></i>Update Class
+                            </button>
+
+                            <a href="{% url 'manage_classes' %}" class="btn btn-outline-secondary px-4">
+                                <i class="bi bi-arrow-left me-1"></i>Back
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4 col-xl-5 mt-4 mt-lg-0">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-4">
+
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="bg-primary-subtle text-primary rounded-3 p-3 me-3">
+                            <i class="bi bi-info-circle-fill fs-4"></i>
+                        </div>
+                        <h5 class="fw-bold mb-0">Edit Class</h5>
+                    </div>
+
+                    <p class="text-muted">Update the class information using the form.</p>
+
+                    <ul class="text-muted ps-3 mb-0">
+                        <li class="mb-2">Class name is required.</li>
+                        <li class="mb-2">Section can be updated.</li>
+                        <li class="mb-2">Academic year can be changed.</li>
+                        <li>You can activate or deactivate the class.</li>
+                    </ul>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

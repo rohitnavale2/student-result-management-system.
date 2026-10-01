@@ -1,0 +1,194 @@
+{% extends 'admin_base.html' %}
+
+{% block title %}Manage Subject Combinations{% endblock %}
+
+{% block content %}
+<div class="container-fluid p-0">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold mb-1">
+                <i class="bi bi-layers text-primary me-2"></i>
+                Manage Subject Combinations
+            </h2>
+            <p class="text-muted mb-0">View and manage class subject combinations.</p>
+        </div>
+
+        <a href="{% url 'create_subject_combination' %}" class="btn btn-primary">
+            <i class="bi bi-plus-circle me-1"></i>
+            Add Combination
+        </a>
+    </div>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags|default:'success' }} alert-dismissible fade show">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- Search -->
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-body">
+            <form method="GET" class="row g-2">
+
+                <div class="col-md-6">
+                    <input type="text"
+                           name="search"
+                           class="form-control"
+                           placeholder="Search class, subject or code..."
+                           value="{{ search }}">
+                </div>
+
+                <div class="col-md-3">
+                    <select name="status" class="form-select">
+                        <option value="">All Status</option>
+                        <option value="active"
+                            {% if status == "active" %}selected{% endif %}>
+                            Active
+                        </option>
+                        <option value="inactive"
+                            {% if status == "inactive" %}selected{% endif %}>
+                            Inactive
+                        </option>
+                    </select>
+                </div>
+
+                <div class="col-md-3 d-flex gap-2">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-search"></i> Search
+                    </button>
+
+                    <a href="{% url 'manage_subject_combinations' %}"
+                       class="btn btn-outline-secondary">
+                        Reset
+                    </a>
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+    <!-- Table -->
+    <div class="card border-0 shadow-sm">
+
+        <div class="card-header bg-white py-3">
+            <h5 class="mb-0 fw-semibold">
+                Subject Combination List
+                <span class="badge bg-primary ms-2">
+                    {{ combinations|length }}
+                </span>
+            </h5>
+        </div>
+
+        <div class="card-body p-0">
+
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+
+                    <thead class="table-light">
+                        <tr>
+                            <th>#</th>
+                            <th>Class</th>
+                            <th>Subject</th>
+                            <th>Subject Code</th>
+                            <th>Status</th>
+                            <th>Created</th>
+                            <th class="text-center">Actions</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        {% for combination in combinations %}
+
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+
+                            <td class="fw-semibold">
+                                {{ combination.class_name.class_name }}
+
+                                {% if combination.class_name.section %}
+                                    - {{ combination.class_name.section }}
+                                {% endif %}
+                            </td>
+
+                            <td>
+                                {{ combination.subject.subject_name }}
+                            </td>
+
+                            <td>
+                                <span class="badge bg-light text-dark border">
+                                    {{ combination.subject.subject_code }}
+                                </span>
+                            </td>
+
+                            <td>
+                                {% if combination.status == "active" %}
+                                    <span class="badge bg-success">
+                                        Active
+                                    </span>
+                                {% else %}
+                                    <span class="badge bg-secondary">
+                                        Inactive
+                                    </span>
+                                {% endif %}
+                            </td>
+
+                            <td>
+                                {{ combination.created_at|date:"d M Y" }}
+                            </td>
+
+                            <td class="text-center">
+
+                                <a href="{% url 'edit_subject_combination' combination.id %}"
+                                   class="btn btn-sm btn-outline-primary"
+                                   title="Edit">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+
+                                <form method="POST"
+                                      action="{% url 'delete_subject_combination' combination.id %}"
+                                      class="d-inline"
+                                      onsubmit="return confirm('Are you sure you want to delete this combination?');">
+
+                                    {% csrf_token %}
+
+                                    <button type="submit"
+                                            class="btn btn-sm btn-outline-danger"
+                                            title="Delete">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+
+                                </form>
+
+                            </td>
+                        </tr>
+
+                        {% empty %}
+
+                        <tr>
+                            <td colspan="7"
+                                class="text-center py-5 text-muted">
+
+                                <i class="bi bi-layers fs-2 d-block mb-2"></i>
+
+                                No subject combinations found.
+
+                            </td>
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+{% endblock %}
